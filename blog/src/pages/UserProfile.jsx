@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getUserByEmail } from "../services/userService";
-import PostCard from "../components/PostCard";
+import PostCard from "../components/post/PostCard";
 
 const Profile = () => {
   const { email } = useSelector((state) => state.user);
@@ -102,8 +102,8 @@ const Profile = () => {
                     key={index}
                     postTitle={post.postTitle}
                     postContent={post.postContent}
-                    postImage={post.postImage && post.postImage.length > 0 ? post.postImage[0] : null}
-                    likeCount={post.like}
+                    postImage={post.postImage}
+                    likeCount={post.likeCount}
                     commentCount={post.commentCount}
                   />
                 ))

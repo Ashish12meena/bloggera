@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createUsers } from '../../services/authService';
 
 export default function Register({ open, closeModal, openLoginModal }) {
-  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -16,7 +16,7 @@ export default function Register({ open, closeModal, openLoginModal }) {
     e.preventDefault(); // Prevent the form from reloading the page
     setError("");
     setLoading(true); // Set loading to true when form is submitted
-    const userData = { fullName, email, password, dateOfBirth };
+    const userData = { username, email, password, dateOfBirth };
 
     try {
       const response = await createUsers(userData);
@@ -24,7 +24,7 @@ export default function Register({ open, closeModal, openLoginModal }) {
         setError(response.message.message);
       } else {
         // Reset fields on successful registration
-        setFullName("");
+        setUsername("");
         setEmail("");
         setPassword("");
         setDateOfBirth("");
@@ -63,14 +63,14 @@ export default function Register({ open, closeModal, openLoginModal }) {
           <form onSubmit={handleSubmit} className="space-y-4 mt-4"> {/* Reduced space between form elements */}
             {/* Full Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-900">Full Name</label>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-900">Full Name</label>
               <input
-                id="name"
-                name="name"
+                id="username"
+                name="username"
                 type="text"
                 required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="block w-full mt-2 p-2 border rounded-md"
                 placeholder="Enter your full name"
               />

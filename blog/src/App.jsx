@@ -8,6 +8,8 @@ import Home from './pages/Home';
 import Profile from './pages/UserProfile';
 import IconStrip from './components/IconStrip';
 import LandingPage from './pages/LandingPage';
+import FullPostCard from './components/post/FullPostCard';
+import PostCard from './components/post/PostCard';
 // import PostCard from './components/PostCard';
 // import Login from './components/auth/Login';
 // import ManageHeader from './pages/ManageHeader';
@@ -20,16 +22,15 @@ function App() {
   return (
     <>
       <Router>
-        {/* <Header /> */}
+          <Header />
         <Routes>
           {/* <Route path="/dashboard" element={<PrivateRoute element={<PostCard />} />} /> */}
           <Route path="/home" element={<PrivateRoute element={<Home />} />} />
           <Route path="/" element={<PrivateRoute element={<Home />} />} />
           <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
+          <Route path="/post" element={<PrivateRoute element={<FullPostCard />} />} />
           <Route path="/start" element={<LandingPage />} />
-          {/* <Route path="/login" element={<Login />} /> */}
-          <Route path="/icon" element={<IconStrip />} />
-          {/* <Route path="/index" element={<Index />} /> */}
+
         </Routes>
       </Router>
     </>

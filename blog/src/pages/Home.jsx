@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import PostCard from '../components/PostCard';
+import PostCard from '../components/post/PostCard';
 import { getCardDetails } from '../services/PostService';
 import { useSelector } from 'react-redux';
 
@@ -29,12 +29,13 @@ const Home = () => {
       {cardDetails.map((post, index) => (
         <div key={index} >
           <PostCard
+            postId={post.postId}
             username={post.username}
             profilePicture={post.profilePicture}
             postTitle={post.postTitle}
             postContent={post.postContent}
-            postImage={post.postImage && post.postImage.length > 0 ? post.postImage[0] : null}
-            likeCount={post.like}
+            postImage={post.postImage}
+            likeCount={post.likeCount}
             commentCount={post.commentCount}
           />
         </div>
