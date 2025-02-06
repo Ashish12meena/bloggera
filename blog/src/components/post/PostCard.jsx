@@ -1,12 +1,19 @@
 import React from 'react';
 import IconStrip from '../IconStrip';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const PostCard = ({ username, profilePicture, postTitle, postContent, postImage, likeCount, commentCount, isFullPost,postId }) => {
   const navigate = useNavigate();
-
+  const {userId} = useSelector((state) => state.user);
+  
+  
+  
+  
   const handleReadMore = () => {
     navigate(`/post?postId=${encodeURIComponent(postId)}`);
+    //navigate(`/post/${postTitle}+"-"+${encodeURIComponent(postId)}`);
+    // ('/post/blog-name-postId')
 
   };
 
@@ -50,7 +57,7 @@ const PostCard = ({ username, profilePicture, postTitle, postContent, postImage,
           </div>
         )}
       </div>
-      <IconStrip likes={likeCount} comments={commentCount} />
+      <IconStrip likeCount={likeCount} commentCount={commentCount} postId={postId} />
     </div>
   );
 };

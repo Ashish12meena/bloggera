@@ -10,7 +10,7 @@ const getToken = () => {
 
 export const getUserByEmail = async (email) => {
     const authToken = getToken();
-    console.log(authToken, " In getCardDetails");
+    
 
     if (!authToken) {
         return false;
@@ -26,7 +26,6 @@ export const getUserByEmail = async (email) => {
             }
         );
 
-        console.log(response.data);
         return response.data; // Return the data part of the response
     } catch (error) {
         console.error('Error fetching user details:', error);

@@ -50,7 +50,9 @@ export default function Login({ open, closeModal }) {
     if (!validate()) return; // Stop if form is invalid
     setLoading(true);
     try {
-      const response = await loginUser(formData, dispatch);
+        const response = await loginUser(formData, dispatch);
+      
+      
 
       if (response.status > 400) {
         setError(response.description || "Login failed. Please try again.");

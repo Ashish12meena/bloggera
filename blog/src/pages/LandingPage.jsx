@@ -4,6 +4,7 @@ import { HiOutlineX } from "react-icons/hi"; // Close icon for mobile menu
 import Register from "../components/auth/Register";
 import Login from "../components/auth/Login";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "../assets/images/illustration-editor-desktop.svg";
 
 const LandingPage = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -170,6 +171,7 @@ const LandingPage = () => {
                 <div className="m-10">
                     <h3 className="mt-6 text-xl font-semibold">Introducing an extensible editor</h3>
                     <p className="mt-2 text-gray-600">Blogr features an intuitive interface focused on content creation...</p>
+                    <img src={logo} alt="png file"></img>
                 </div>
                 <div className="m-10">
                     <h3 className="mt-6 text-xl font-semibold">Robust content management</h3>

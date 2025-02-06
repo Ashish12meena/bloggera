@@ -23,10 +23,13 @@ export const loginUser = async (user,dispatch) => {
         console.log("In Login User");
         if (response.data.authToken) {
             localStorage.setItem("authToken", JSON.stringify(response.data.authToken))
-            console.log(response.data);
+            // console.log(response.data);
             dispatch(
                 setUser({
                   email:response.data.user.email,
+                  userId:response.data.user.userId,
+                  username:response.data.user.username,
+                  profilePicture:response.data.user.profilePicture,
                 })
               );
 

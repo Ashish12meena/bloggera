@@ -13,7 +13,7 @@ const getToken = () => {
 export const  getCardDetails = async () => {
 
     const authToken = getToken();
-    console.log(authToken," In getCardDetails");
+    
     
     if (!authToken) {
         return false;
@@ -29,7 +29,7 @@ export const  getCardDetails = async () => {
       }
     );
 
-    console.log(response.data);
+    
     return response.data; // Return the data part of the response
   } catch (error) {
     console.error('Error fetching card details:', error);
@@ -39,8 +39,6 @@ export const  getCardDetails = async () => {
 export const  getFullPostDetail = async ({postId}) => {
 
     const authToken = getToken();
-    console.log(authToken," In getCardDetails",postId);
-    
     if (!authToken) {
         return false;
     }
@@ -54,8 +52,6 @@ export const  getFullPostDetail = async ({postId}) => {
         },
       }
     );
-
-    console.log(response.data);
     return response.data; // Return the data part of the response
   } catch (error) {
     console.error('Error fetching card details:', error);

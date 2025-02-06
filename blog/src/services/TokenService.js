@@ -12,14 +12,20 @@ const getToken = () => {
 };
 export const TokenService = async (dispatch) => {
     const authToken = getToken();
-    console.log(authToken);
+    
+
     
     if (!authToken) {
         return false;
     }
+    const decodedToken = jwtDecode(authToken); 
+    const email = decodedToken.sub; 
+    
+    
     try {
-        const response = await axios.get(
-            "http://localhost:8080/api/posts/validateToken",
+        const response = await axios.post(
+            "http://localhost:8080/api/users/validateToken",
+            {email},
             {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
@@ -27,14 +33,15 @@ export const TokenService = async (dispatch) => {
                 },
             }
         );
-        if (response.data === "valid") {
-            const decodedToken = jwtDecode(authToken); // Decode the JWT
-            const username = decodedToken.sub; // Assuming the username is stored in the "sub" field
-            console.log("Extracted Username:", username);
+        
+        if (response.status === 200) {
+            
 
-            // Dispatch username to Redux
             dispatch(setUser({
-                email:username,
+                email:response.data.email,
+                username:response.data.username,
+                profilePicture:response.data.profilePicture,
+                userId:response.data.userId,
             }));
 
             return true;

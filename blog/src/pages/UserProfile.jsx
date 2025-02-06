@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getUserByEmail } from "../services/userService";
 import PostCard from "../components/post/PostCard";
+import profileEmptyLogo from "../assets/images/No-Avtar.png";
 
 const Profile = () => {
   const { email } = useSelector((state) => state.user);
@@ -31,7 +32,7 @@ const Profile = () => {
           <div className="md:w-3/12">
             <img
               className="w-24 h-24 md:w-40 md:h-40 object-cover rounded-full border-2 border-pink-600 p-1"
-              src={user.profilePicture || "../assets/images/No-Avtar.png"}
+              src={user.profilePicture === "" ? profileEmptyLogo : user.profilePicture}
               alt="Profile"
             />
           </div>
@@ -105,6 +106,7 @@ const Profile = () => {
                     postImage={post.postImage}
                     likeCount={post.likeCount}
                     commentCount={post.commentCount}
+                    postId={post.postId}
                   />
                 ))
               ) : (

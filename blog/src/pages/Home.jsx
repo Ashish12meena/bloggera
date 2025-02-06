@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 const Home = () => {
   const [cardDetails,setCardDetails]=useState([])
   const [loading, setLoading] = useState(true);
-  console.log(cardDetails,"Hello");
+  
   
   
   useEffect(() => {

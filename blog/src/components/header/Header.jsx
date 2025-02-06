@@ -7,6 +7,7 @@ import { TbLogout } from "react-icons/tb";
 import { SlSettings } from "react-icons/sl";
 import { CgProfile } from "react-icons/cg";
 import { clearUser } from '../../redux/userSlice';
+import profileEmptyLogo from "../../assets/images/No-Avtar.png";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -15,12 +16,12 @@ function classNames(...classes) {
 export default function Header() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const email = useSelector((state) => state.user.email);
+    const {email,profilePicture}= useSelector((state) => state.user);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [prevScrollY, setPrevScrollY] = useState(0); // Track previous scroll position
     const [isScrollingDown, setIsScrollingDown] = useState(false); // Track scroll direction
-
+    
     const handleLogOut = () => {
         localStorage.removeItem('authToken');
         dispatch(clearUser())
@@ -74,9 +75,11 @@ export default function Header() {
                                     </div>
                                     <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                                         <div className="flex shrink-0 items-center">
-                                            <div className="text-gray-900 font-bold text-lg">
-                                                Bloggera
-                                            </div>
+                                            <Link to="/">
+                                                <div className="text-gray-900 font-bold text-lg cursor-pointer">
+                                                    Bloggera
+                                                </div>
+                                            </Link>
                                         </div>
                                         <div className="hidden sm:ml-6 sm:block">
                                             <div className="flex space-x-4">
@@ -125,7 +128,7 @@ export default function Header() {
                                                     <span className="sr-only">Open user menu</span>
                                                     <div className="w-8 h-8 rounded-full overflow-hidden">
                                                         <img
-                                                            src="https://images.pexels.com/photos/30237034/pexels-photo-30237034/free-photo-of-chateau-de-le-lude-in-golden-hour.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+                                                            src={profilePicture ? profilePicture : profileEmptyLogo}
                                                             alt="User"
                                                             className="w-full h-full object-cover "
                                                         />
