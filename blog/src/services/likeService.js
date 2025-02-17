@@ -47,7 +47,7 @@ export const addLike = async (userId, postId) => {
     if (!authToken) {
         return false;
     }
-    console.log("In addLike", userId, "   ", postId);
+    
 
     try {
         const response = await axios.post(
@@ -116,7 +116,7 @@ export const LikeCommentCount = async (postId) => {
                 },
             }
         );
-        console.log(response.data);
+        
         
         if (response.status === 200) {
             return response;

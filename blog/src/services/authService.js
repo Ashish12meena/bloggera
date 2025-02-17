@@ -18,7 +18,7 @@ export const createUsers = async (user) => {
 export const loginUser = async (user,dispatch) => {
     console.log(user);  
     console.log("In catch user ");
-
+    
     return axios.post(REST_API_BASE_URL + '/login', user).then((response) => {
         console.log("In Login User");
         if (response.data.authToken) {
@@ -34,7 +34,9 @@ export const loginUser = async (user,dispatch) => {
               );
 
         }
-        return response.data;
+        console.log(response, "response in login");
+        
+        return response.status;
 
     }).catch((error) => {
         console.log(error);

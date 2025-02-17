@@ -8,6 +8,7 @@ const Profile = () => {
   const { email } = useSelector((state) => state.user);
   const [user, setUser] = useState(null); 
   const [posts, setPosts] = useState(null); 
+  
 
   useEffect(() => {
     if (email) {
@@ -25,7 +26,7 @@ const Profile = () => {
   }
 
   return (
-    <main className="bg-gray-100 bg-opacity-25 py-6">
+    <main className=" bg-opacity-25 py-6 " >
       <div className="lg:w-10/12 mx-auto mb-8 ">
         {/* Header Section */}
         <header className="flex flex-wrap items-center py-4 md:py-8">
@@ -94,7 +95,7 @@ const Profile = () => {
         </div>
 
         {/* Posts Section */}
-        <div className="bg-gray-100 p-6">
+        <div className=" p-6">
           <div className="container">
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
               {posts && posts.length > 0 ? (
@@ -107,6 +108,7 @@ const Profile = () => {
                     likeCount={post.likeCount}
                     commentCount={post.commentCount}
                     postId={post.postId}
+                    likeStatus={post.likeStatus}
                   />
                 ))
               ) : (

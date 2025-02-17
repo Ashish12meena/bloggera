@@ -14,6 +14,8 @@ export const TokenService = async (dispatch) => {
     const authToken = getToken();
     
 
+    console.log(authToken,"authToken in tokenservice");
+    
     
     if (!authToken) {
         return false;
@@ -34,9 +36,14 @@ export const TokenService = async (dispatch) => {
             }
         );
         
+        
+        console.log(response," response of authtoken");
+        
         if (response.status === 200) {
             
 
+            console.log("token service");
+            
             dispatch(setUser({
                 email:response.data.email,
                 username:response.data.username,
@@ -48,6 +55,7 @@ export const TokenService = async (dispatch) => {
         }
         return false;
     } catch (error) {
+        console.log(" token response");    
         return false;
     }
 }

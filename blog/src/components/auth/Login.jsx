@@ -50,17 +50,18 @@ export default function Login({ open, closeModal }) {
     if (!validate()) return; // Stop if form is invalid
     setLoading(true);
     try {
-        const response = await loginUser(formData, dispatch);
-      
-      
+      const response = await loginUser(formData, dispatch).then((response) => {
+        if (response > 400) {
+          setError(response.description || "Login failed. Please try again.");
+        } else {
+          console.log("naviagte");
 
-      if (response.status > 400) {
-        setError(response.description || "Login failed. Please try again.");
-      } else {
-        closeModal();
-        navigate("/home");
-        // window.location.reload(); // Trigger a refresh after navigation
-      }
+          closeModal();
+          navigate("/home");
+          // window.location.reload(); // Trigger a refresh after navigation
+        }
+      });
+
     } catch (err) {
       console.error("Login failed:", err);
       setError("Invalid username or password");
@@ -142,8 +143,8 @@ export default function Login({ open, closeModal }) {
                   Sign in
                 </button>
                 {error && (
-                    <p className="text-red-500 text-sm mt-1">{error}</p>
-                  )}
+                  <p className="text-red-500 text-sm mt-1">{error}</p>
+                )}
               </div>
             </form>
 

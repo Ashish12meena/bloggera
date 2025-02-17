@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { TbLogout } from "react-icons/tb";
 import { SlSettings } from "react-icons/sl";
 import { CgProfile } from "react-icons/cg";
+import { TfiWrite } from "react-icons/tfi";
 import { clearUser } from '../../redux/userSlice';
 import profileEmptyLogo from "../../assets/images/No-Avtar.png";
 
@@ -22,11 +23,11 @@ export default function Header() {
     const [prevScrollY, setPrevScrollY] = useState(0); // Track previous scroll position
     const [isScrollingDown, setIsScrollingDown] = useState(false); // Track scroll direction
     
-    const handleLogOut = () => {
-        localStorage.removeItem('authToken');
-        dispatch(clearUser())
-        navigate('/start');
-    };
+        const handleLogOut = () => {
+            localStorage.removeItem('authToken');
+            dispatch(clearUser())
+            navigate('/start');
+        };
 
     useEffect(() => {
         if (email) {
@@ -117,7 +118,15 @@ export default function Header() {
                                             className="relative cursor-pointer rounded-full bg-white p-1 text-gray-500 hover:text-gray-900 focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white focus:outline-hidden"
                                         >
                                             <span className="absolute -inset-1.5" />
-                                            <span className="sr-only">View notifications</span>
+                                            <span className="sr-only">Write</span>
+                                            <TfiWrite aria-hidden= "true" className="size-6" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="relative cursor-pointer rounded-full bg-white p-1 text-gray-500 hover:text-gray-900 focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-white focus:outline-hidden"
+                                        >
+                                            <span className="absolute -inset-1.5" />
+                                            <span className="sr-only">Write</span>
                                             <BellIcon aria-hidden="true" className="size-6" />
                                         </button>
 

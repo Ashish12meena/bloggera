@@ -5,52 +5,45 @@ import { useSelector } from 'react-redux';
 
 
 
-const IconStrip = ({saves, postId }) => {
-  const [liked, setLiked] = useState(false)
-  const [likeCounts, setLikeCounts] = useState(0);
-  const [commentCounts,setCommentCounts] = useState(0);
+const IconStrip = ({likeCount,commentCount,saves, postId ,likeStatus }) => {
+  const [liked, setLiked] = useState(likeStatus || false)
+  const [likeCounts, setLikeCounts] = useState(likeCount || 0);
+  const [commentCounts,setCommentCounts] = useState(commentCount || 0);
   const {userId} = useSelector((state) => state.user);
+
+  
+  useEffect(() => {
+    setCommentCounts(commentCount);
+  }, [commentCount]);
   
   
 
-  useEffect(() => {
     const fetchLikeStatus = async () => {
       try {
         const isLiked = await checkIfLiked(userId,postId);
-        
-        
         setLiked(isLiked.data);
       } catch (error) {
         console.error('Error checking like status:', error);
       }
-    };
-    const fetchCountStatus = async () => {
-      try {
-        const countDetail = await LikeCommentCount(postId);
-        
-        setLikeCounts(countDetail.data.likeCount);
-        setCommentCounts(countDetail.data.commentCount);
-        
-      } catch (error) {
-        // console.error('Error checking like status:', error);
-      }
-    };
-    fetchCountStatus();
-    fetchLikeStatus();
-  }, [postId, userId])
+    }
+    // fetchLikeStatus();
+ 
+
 
   const handleLike = async () => {
     try {
       if (liked) {
         // Remove the like from the database
-        await removeLike(userId,postId);
+        setLiked(!liked);
         setLikeCounts(likeCounts - 1);
+        await removeLike(userId,postId);
       } else {
         // Add the like to the database
-        await addLike(userId,postId);
+        setLiked(!liked);
         setLikeCounts(likeCounts + 1);
+        await addLike(userId,postId);
       }
-      setLiked(!liked);  // Toggle the liked state
+        // Toggle the liked state
     } catch (error) {
       console.error('Error handling like:', error);
     }

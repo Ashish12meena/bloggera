@@ -5,22 +5,22 @@ import { getCurrentUser } from './authService';
 const BASE_URL = 'http://localhost:8080/api/comments';
 
 const getToken = () => {
-    const user = getCurrentUser(); 
-    return user ? user : null; 
+  const user = getCurrentUser();
+  return user ? user : null;
 };
 
-export const  getCommentDetailsById = async ({commentId}) => {
+export const getCommentDetailsById = async ({ commentId }) => {
 
-    const authToken = getToken();
-    console.log(authToken," In getCardDetails",commentId);
-    
-    if (!authToken) {
-        return false;
-    }
+  const authToken = getToken();
+  
+
+  if (!authToken) {
+    return false;
+  }
   try {
     const response = await axios.post(
       `${BASE_URL}/commentCard`,
-      {commentId},
+      { commentId },
       {
         headers: {
           Authorization: `Bearer ${authToken}`, // Add the Bearer token in the Authorization header
@@ -28,10 +28,39 @@ export const  getCommentDetailsById = async ({commentId}) => {
       }
     );
 
-    console.log(response.data);
+    
     return response.data; // Return the data part of the response
   } catch (error) {
     console.error('Error fetching card details:', error);
     throw error; // Re-throw the error for further handling
   }
 };
+
+export const submitComment = async ({data}) => {
+  const authToken = getToken();
+  // console.log(authToken, " In getCardDetails", commentId);
+
+  if (!authToken) {
+    return false;
+  }
+
+  
+  try {
+    // const payload = data;
+    const response = await axios.post(
+      `${BASE_URL}/addComment`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Add the Bearer token in the Authorization header
+        },
+      }
+    );
+
+    
+    return response; // Return the data part of the response
+  } catch (error) {
+    console.error('Error fetching card details:', error);
+    throw error; // Re-throw the error for further handling
+  }
+}
