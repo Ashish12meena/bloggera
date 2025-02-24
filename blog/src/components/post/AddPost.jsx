@@ -1,10 +1,9 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { Button, Input } from '@headlessui/react';
 import JoditEditor from 'jodit-react';
 import { useSelector } from 'react-redux';
 import { addPost } from '../../services/PostService';
-
-const categoriesList = ["Technology", "Education", "Health", "Science", "Finance", "Sports", "Entertainment"];
+import { getCategories } from '../../services/CategoryService';
 
 const AddPost = ({ placeholder }) => {
   const { userId } = useSelector(state => state.user);
@@ -12,12 +11,28 @@ const AddPost = ({ placeholder }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]); // Renamed state to categoriesList
   const [image, setImage] = useState(null);
+  const [categorySearch, setCategorySearch] = useState('');
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  
 
   const config = useMemo(() => ({
     readonly: false,
     placeholder: placeholder || 'Start typing...'
   }), [placeholder]);
+
+  useEffect(() => {
+    const fetchCategoryList = async () => {
+      try {
+        const data = await getCategories();
+        setCategoriesList(data); // Assuming data is an array of { id, name } objects
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategoryList()
+  }, []);
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -28,26 +43,54 @@ const AddPost = ({ placeholder }) => {
     setContent('');
     setCategory([]);
     setImage(null);
+    setCategorySearch('');
+    setFilteredCategories([]);
   };
 
   const contentFieldChanged = (newContent) => {
     setContent(newContent);
   };
 
-  const handleCategoryChange = (e) => {
-    const selectedCategory = e.target.value;
+  // Handle category search input
+  const handleCategorySearch = (e) => {
+    const searchText = e.target.value;
+    setCategorySearch(searchText);
 
-    // Add category if not already selected, remove if it exists
-    setCategory((prevCategories) =>
-      prevCategories.includes(selectedCategory)
-        ? prevCategories.filter(cat => cat !== selectedCategory)
-        : [...prevCategories, selectedCategory]
-    );
+    if (searchText.trim() === '') {
+      setFilteredCategories([]);
+      return;
+    }
+
+    const matchedCategories = categoriesList
+      .filter(cat => cat.name.toLowerCase().includes(searchText.toLowerCase())) // Filtering by name
+      .sort((a, b) => {
+        const matchA = a.name.toLowerCase().indexOf(searchText.toLowerCase());
+        const matchB = b.name.toLowerCase().indexOf(searchText.toLowerCase());
+
+        // Prioritize categories where the search text appears earlier in the string
+        return matchA - matchB;
+      })
+      .slice(0, 4); // Limit the number of suggestions
+
+    setFilteredCategories(matchedCategories);
+  };
+
+  // Handle category selection from dropdown
+  const handleCategorySelect = (selectedCategory) => {
+    if (!category.some(cat => cat.id === selectedCategory.id)) { // Prevent duplicate categories
+      setCategory([...category, selectedCategory]);
+    }
+    setCategorySearch('');
+    setFilteredCategories([]);
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setImage(file);
+    if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+      setImage(file);
+    } else {
+      alert('Please select a valid image file (JPEG/PNG)');
+    }
   };
 
   const createPost = async (e) => {
@@ -58,8 +101,7 @@ const AddPost = ({ placeholder }) => {
     formData.append("title", title);
     formData.append("content", content);
 
-    // Append each category separately
-    category.forEach(cat => formData.append("category", cat));
+    category.forEach(cat => formData.append("category", cat.id)); // Use id for categories
 
     if (image) {
       formData.append("postImage", image);
@@ -101,20 +143,32 @@ const AddPost = ({ placeholder }) => {
           />
         </div>
 
-        <div className="my-3">
-          <label htmlFor="category" className="font-semibold text-lg">Select Category</label>
-          <select
-            id="category"
-            multiple
-            value={category}
-            onChange={handleCategoryChange}
+        <div className="my-3 relative">
+          <label htmlFor="categorySearch" className="font-semibold text-lg">Search Category</label>
+          <Input
+            type="text"
+            id="categorySearch"
+            placeholder="Search category"
             className="rounded-md border border-gray-300 w-full p-2 mt-2"
-          >
-            {categoriesList.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-          <p className="mt-2 text-gray-600">Selected Categories: {category.join(", ")}</p>
+            value={categorySearch}
+            onChange={handleCategorySearch}
+          />
+
+          {filteredCategories.length > 0 && (
+            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
+              {filteredCategories.map((cat) => (
+                <li
+                  key={cat.id} // Using 'id' as key
+                  className="p-2 cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleCategorySelect(cat)} // Pass the whole category object
+                >
+                  {cat.name}  {/* Displaying category name */}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <p className="mt-2 text-gray-600">Selected Categories: {category.map(cat => cat.name).join(", ")}</p>
         </div>
 
         <div className="mt-3">
@@ -139,7 +193,7 @@ const AddPost = ({ placeholder }) => {
       {/* Debugging */}
       <div>{title}</div>
       <div>{content}</div>
-      <div>{category.join(", ")}</div>
+      <div>{category.map(cat => cat.name).join(", ")}</div>
     </div>
   );
 };

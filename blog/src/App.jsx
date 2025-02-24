@@ -12,6 +12,8 @@ import FullPostCard from './components/post/FullPostCard';
 import PostCard from './components/post/PostCard';
 import Sidebar from './components/header/Sidebar';
 import AddPost from './components/post/AddPost';
+import SettingHome from './components/settings/SettingHome';
+import Explore from './pages/Explore';
 
 // import PostCard from './components/PostCard';
 // import Login from './components/auth/Login';
@@ -28,6 +30,7 @@ function App() {
         <div className="flex">
           {/* Sidebar */}
           {/* <Sidebar /> */}
+          
           <Sidebar />
           
           {/* Main Content */}
@@ -39,6 +42,8 @@ function App() {
               <Route path="/" element={<PrivateRoute element={<Home />} />} />
               <Route path="/profile" element={<PrivateRoute element={<Profile />} />} />
               <Route path="/post" element={<PrivateRoute element={<FullPostCard />} />} />
+              <Route path="/explore" element={<PrivateRoute element={<Explore />} />} />
+              <Route path="/settings" element={<PrivateRoute element={<SettingHome />} />} />
               <Route path="/start" element={<LandingPage />} />
             </Routes>
           </div>

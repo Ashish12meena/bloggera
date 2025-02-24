@@ -6,17 +6,20 @@ import { getFullPostDetail } from "../../services/PostService";
 import { useSelector } from "react-redux";
 import { submitComment } from "../../services/CommentService";
 
+
 const FullPostCard = () => {
     const [cardDetails, setCardDetails] = useState({})
     const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const postId = params.get("postId");
     const { userId } = useSelector((state) => state.user)
+    
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 const data = await getFullPostDetail({ postId, userId }); // Fetch data from the API
                 setCardDetails(data); // Update state with the fetched data
@@ -24,11 +27,14 @@ const FullPostCard = () => {
             } catch (error) {
                 console.error('Error fetching card details:', error);
                 setLoading(false); // Set loading to false in case of error
+            }finally{
+                setLoading(false)
             }
         };
 
         fetchData();
     }, [postId, userId]);
+
 
 
 
@@ -66,10 +72,9 @@ const FullPostCard = () => {
         setMessage("")
         setIsTyping(false)
     }
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p>loading..</p>;
     if (!cardDetails) return <p>No Post Found</p>;
-
-
+ 
     return (
         <>
             <div>

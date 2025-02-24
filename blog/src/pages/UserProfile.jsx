@@ -3,12 +3,18 @@ import { useSelector } from "react-redux";
 import { getUserByEmail } from "../services/userService";
 import PostCard from "../components/post/PostCard";
 import profileEmptyLogo from "../assets/images/No-Avtar.png";
+import ProfileSkeleton from "../components/Skeleton/ProfileSkeleton";
 
 const Profile = () => {
   const { email } = useSelector((state) => state.user);
-  const [user, setUser] = useState(null); 
-  const [posts, setPosts] = useState(null); 
-  
+  const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState(null);
+  const [activeTab,setActiveTab] = useState("posts");
+
+  // Scroll to the top when the component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (email) {
@@ -22,99 +28,85 @@ const Profile = () => {
   }, [email]);
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <ProfileSkeleton />;
   }
+  
+  
 
   return (
-    <main className=" bg-opacity-25 py-6 " >
-      <div className="lg:w-10/12 mx-auto mb-8 ">
+    <main className="bg-opacity-25 py-6 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto mb-8">
         {/* Header Section */}
-        <header className="flex flex-wrap items-center py-4 md:py-8">
-          <div className="md:w-3/12">
+        <header className="flex flex-col sm:flex-row items-center py-4 md:py-8 text-center sm:text-left">
+          <div className="w-32 h-32 sm:w-40 sm:h-40">
             <img
-              className="w-24 h-24 md:w-40 md:h-40 object-cover rounded-full border-2 border-pink-600 p-1"
+              className="w-full h-full object-cover rounded-full border-2 border-pink-600 p-1"
               src={user.profilePicture === "" ? profileEmptyLogo : user.profilePicture}
               alt="Profile"
             />
           </div>
 
           {/* Profile Meta */}
-          <div className="md:w-9/12 ml-4">
-            <div className="flex flex-wrap items-center mb-4">
-              <h2 className="text-3xl font-light md:mr-2 mb-2 sm:mb-0">{user.username}</h2>
-              <span
-                className="inline-block fas fa-certificate fa-lg text-blue-500 relative mr-6 text-xl transform -translate-y-2"
-                aria-hidden="true"
-              >
-                <i className="fas fa-check text-white text-xs absolute inset-x-0 ml-1 mt-px"></i>
+          <div className="sm:ml-6 mt-4 sm:mt-0 flex-1">
+            <div className="flex flex-col sm:flex-row items-center sm:justify-start gap-2 mb-4">
+              <h2 className="text-2xl sm:text-3xl font-light">{user.username}</h2>
+              <span className="text-blue-500 text-xl relative">
+                <i className="fas fa-check-circle"></i>
               </span>
-              <a
-                href="#"
-                className="bg-blue-500 px-4 py-2 text-white font-semibold text-sm rounded block sm:inline-block"
-              >
+              <button className="bg-blue-500 px-4 py-2 text-white font-semibold text-sm rounded mt-2 sm:mt-0">
                 Follow
-              </a>
+              </button>
             </div>
 
             {/* Stats Section */}
-            <ul className="hidden md:flex space-x-8 mb-4 text-sm text-gray-600">
+            <ul className="flex justify-center sm:justify-start space-x-6 text-sm text-gray-600">
               <li><span className="font-semibold">136</span> posts</li>
               <li><span className="font-semibold">40.5k</span> followers</li>
               <li><span className="font-semibold">302</span> following</li>
             </ul>
 
             {/* Bio Section */}
-            <div className="hidden md:block">
-              <h1 className="font-semibold text-gray-700">{user.bio}</h1>
-            </div>
+            <p className="mt-2 text-gray-700 text-sm sm:text-base">{user.bio}</p>
           </div>
         </header>
 
         {/* Post Navigation */}
-        <div className="px-px md:px-3">
-          <ul className="flex items-center justify-around md:justify-center space-x-12 uppercase tracking-widest font-semibold text-xs text-gray-600 border-t">
-            <li className="md:border-t md:border-gray-700 md:-mt-px md:text-gray-700">
-              <a className="inline-block p-3" href="#">
-                <i className="fas fa-th-large text-xl md:text-xs"></i>
-                <span className="hidden md:inline">Posts</span>
-              </a>
+        <div className="border-t mt-4">
+          <ul className="flex justify-center space-x-6 text-xs sm:text-sm font-semibold text-gray-600 py-3">
+            <li>
+              <a  className={`pb-1 cursor-pointer ${activeTab === "posts" ? "border-b-2 border-gray-700 text-gray-700" : ""}`}
+              onClick={() => setActiveTab("posts")}>Posts</a>
             </li>
             <li>
-              <a className="inline-block p-3" href="#">
-                <i className="far fa-square text-xl md:text-xs"></i>
-                <span className="hidden md:inline">IGTV</span>
-              </a>
+              <a className={`pb-1 cursor-pointer ${activeTab === "saved" ? "border-b-2 border-gray-700 text-gray-700" : ""}`}
+              onClick={() => setActiveTab("saved")}>Saved</a>
             </li>
             <li>
-              <a className="inline-block p-3" href="#">
-                <i className="fas fa-user border border-gray-500 px-1 pt-1 rounded text-xl md:text-xs"></i>
-                <span className="hidden md:inline">Tagged</span>
-              </a>
+              <a className={`pb-1 cursor-pointer ${activeTab === "tagged" ? "border-b-2 border-gray-700 text-gray-700" : ""}`}
+              onClick={() => setActiveTab("tagged")}>Tagged</a>
             </li>
           </ul>
         </div>
 
         {/* Posts Section */}
-        <div className=" p-6">
-          <div className="container">
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
-              {posts && posts.length > 0 ? (
-                posts.map((post, index) => (
-                  <PostCard
-                    key={index}
-                    postTitle={post.postTitle}
-                    postContent={post.postContent}
-                    postImage={post.postImage}
-                    likeCount={post.likeCount}
-                    commentCount={post.commentCount}
-                    postId={post.postId}
-                    likeStatus={post.likeStatus}
-                  />
-                ))
-              ) : (
-                <div>No Post Available</div>
-              )}
-            </div>
+        <div className="p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
+            {posts && posts.length > 0 ? (
+              posts.map((post, index) => (
+                <PostCard
+                  key={index}
+                  postTitle={post.postTitle}
+                  postContent={post.postContent}
+                  postImage={post.postImage}
+                  likeCount={post.likeCount}
+                  commentCount={post.commentCount}
+                  postId={post.postId}
+                  likeStatus={post.likeStatus}
+                />
+              ))
+            ) : (
+              <div className="text-center col-span-full">No Post Available</div>
+            )}
           </div>
         </div>
       </div>

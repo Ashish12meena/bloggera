@@ -18,6 +18,7 @@ import { FaSearch } from "react-icons/fa";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { TfiWrite } from "react-icons/tfi";
 import { GoPerson } from "react-icons/go";
+import SidebarSkleton from '../Skeleton/SidebarSkleton';
 
 
 
@@ -41,6 +42,7 @@ export default function Layout() {
     const [showProfileMenu, setShowProfileMenu] = useState(false); // Manage pop-up visibility
     const [activeIcon , setActiveIcon] = useState(null)
 
+
     const handleLogOut = () => {
         localStorage.removeItem('authToken');
         dispatch(clearUser())
@@ -59,6 +61,7 @@ export default function Layout() {
         } else {
             setIsAuthenticated(false);
         }
+        
     }, [email]);
     const handleMenuClick = (path) => {
         setActiveIcon(path)
@@ -66,11 +69,11 @@ export default function Layout() {
     };
 
     if (isAuthenticated === null) {
-        return <div>Loading...</div>;
+        return <div><SidebarSkleton></SidebarSkleton></div>;
     }
-
     return (
         <>
+            
             {isAuthenticated && (
                 <div className={`flex h-screen p-4 ${open ? 'md:ml-52 ml-10' : 'md:ml-10 ml-10'}`}>
                     {/* Sidebar */}

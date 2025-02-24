@@ -26,6 +26,7 @@ export const getUserByEmail = async (email) => {
             }
         );
         
+        console.log(response);
         
 
         return response.data; // Return the data part of the response

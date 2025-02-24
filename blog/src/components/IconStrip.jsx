@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { FaRegHeart, FaCommentDots, FaRegBookmark, FaEllipsisH, FaThumbsUp, FaHeart } from 'react-icons/fa';
+import { FaRegHeart, FaCommentDots, FaRegBookmark, FaEllipsisH, FaThumbsUp, FaHeart, FaBookmark } from 'react-icons/fa';
 import { addLike, checkIfLiked, LikeCommentCount, removeLike } from '../services/likeService';
 import { useSelector } from 'react-redux';
 
 
 
-const IconStrip = ({likeCount,commentCount,saves, postId ,likeStatus }) => {
+const IconStrip = ({ likeCount, commentCount, saves, postId, likeStatus }) => {
   const [liked, setLiked] = useState(likeStatus || false)
   const [likeCounts, setLikeCounts] = useState(likeCount || 0);
-  const [commentCounts,setCommentCounts] = useState(commentCount || 0);
-  const {userId} = useSelector((state) => state.user);
+  const [commentCounts, setCommentCounts] = useState(commentCount || 0);
+  const { userId } = useSelector((state) => state.user);
+  const [bookMark, setBokMark] = useState(false);
 
-  
   useEffect(() => {
     setCommentCounts(commentCount);
   }, [commentCount]);
-  
-  
 
-    const fetchLikeStatus = async () => {
-      try {
-        const isLiked = await checkIfLiked(userId,postId);
-        setLiked(isLiked.data);
-      } catch (error) {
-        console.error('Error checking like status:', error);
-      }
+
+
+  const fetchLikeStatus = async () => {
+    try {
+      const isLiked = await checkIfLiked(userId, postId);
+      setLiked(isLiked.data);
+    } catch (error) {
+      console.error('Error checking like status:', error);
     }
-    // fetchLikeStatus();
- 
+  }
+  // fetchLikeStatus();
+
 
 
   const handleLike = async () => {
@@ -36,14 +36,14 @@ const IconStrip = ({likeCount,commentCount,saves, postId ,likeStatus }) => {
         // Remove the like from the database
         setLiked(!liked);
         setLikeCounts(likeCounts - 1);
-        await removeLike(userId,postId);
+        await removeLike(userId, postId);
       } else {
         // Add the like to the database
         setLiked(!liked);
         setLikeCounts(likeCounts + 1);
-        await addLike(userId,postId);
+        await addLike(userId, postId);
       }
-        // Toggle the liked state
+      // Toggle the liked state
     } catch (error) {
       console.error('Error handling like:', error);
     }
@@ -71,11 +71,17 @@ const IconStrip = ({likeCount,commentCount,saves, postId ,likeStatus }) => {
         </div>
       </div>
 
-      {/* Right section (Save and More icons) */}
+      
       <div className="flex items-center space-x-6">
         {/* Save Icon */}
-        <div className="flex items-center space-x-2">
-          <FaRegBookmark className="text-xl cursor-pointer hover:text-yellow-500" />
+        <div className="flex items-center space-x-2"
+          onClick={() => setBokMark(!bookMark)}>
+          {bookMark ? (
+            <FaBookmark className="text-xl cursor-pointer" />
+          ) : (
+            <FaRegBookmark className="text-xl cursor-pointer" />
+          )}
+
           <span className="text-sm">{saves}</span>
         </div>
 

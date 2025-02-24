@@ -10,7 +10,7 @@ const getToken = () => {
 };
 
 // Function to fetch card details with Bearer token
-export const  getCardDetails = async ({userId}) => {
+export const  getCardDetails = async ({userId, excludedIds = []}) => {
 
     const authToken = getToken();
     
@@ -21,7 +21,7 @@ export const  getCardDetails = async ({userId}) => {
   try {
     const response = await axios.post(
       `${BASE_URL}/cardDetails`,
-      {userId},
+      {userId,excludedIds},
       {
         headers: {
           Authorization: `Bearer ${authToken}`, // Add the Bearer token in the Authorization header
@@ -87,6 +87,34 @@ export const  addPost = async (formData) => {
     console.log(response);
     
     return response; // Return the data part of the response
+  } catch (error) {
+    console.error('Error fetching card details:', error);
+    throw error; // Re-throw the error for further handling
+  }
+};
+export const  searchPost = async (formData) => {
+
+  console.log('formdata', formData);
+  
+    const authToken = getToken();
+    if (!authToken) {
+        return false;
+    }
+    
+    
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/search`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`, // Add the Bearer token in the Authorization header
+        },
+      }
+    );
+    console.log(response);
+    
+    return response; 
   } catch (error) {
     console.error('Error fetching card details:', error);
     throw error; // Re-throw the error for further handling
