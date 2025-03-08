@@ -2,7 +2,8 @@ import axios from 'axios';
 import { getCurrentUser } from './authService';
 
 // Base URL for the API
-const BASE_URL = 'http://localhost:8080/api/posts';
+const BASE = import.meta.env.VITE_API_URL;
+const BASE_URL = `${BASE}/api/posts`;
 
 const getToken = () => {
     const user = getCurrentUser(); 

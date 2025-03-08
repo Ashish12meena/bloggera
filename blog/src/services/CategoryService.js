@@ -2,7 +2,9 @@ import axios from 'axios';
 import { getCurrentUser } from './authService';
 
 
-const BASE_URL = 'http://localhost:8080/api/category';
+const BASE = import.meta.env.VITE_API_URL;
+
+const BASE_URL = `${BASE}/api/category`;
 
 const getToken = () => {
     const user = getCurrentUser(); 

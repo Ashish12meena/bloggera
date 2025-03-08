@@ -1,6 +1,8 @@
 import axios from "axios";
 import { setUser } from "../redux/userSlice";
-const REST_API_BASE_URL = 'http://localhost:8080/auth/users'
+
+const BASE = import.meta.env.VITE_API_URL;
+const REST_API_BASE_URL = `${BASE}/auth/users`
 
 export const createUsers = async (user) => {
     return axios.post(REST_API_BASE_URL + '/register', user).then((response) => {

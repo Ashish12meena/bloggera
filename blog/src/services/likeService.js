@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getCurrentUser } from "./authService";
 
-const REST_API_BASE_URL = 'http://localhost:8080/api/like';
+const BASE = import.meta.env.VITE_API_URL;
+const REST_API_BASE_URL = `${BASE}/api/like`;
 
 const getToken = () => {
     const user = getCurrentUser();
