@@ -38,11 +38,8 @@ export const getCommentDetailsById = async ({ commentId }) => {
 };
 
 export const submitComment = async ({data}) => {
-
-  console.log("Hello ",data);
   
   const authToken = getToken();
-  // console.log(authToken, " In getCardDetails", commentId);
 
   if (!authToken) {
     return false;

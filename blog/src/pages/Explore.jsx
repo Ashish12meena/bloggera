@@ -14,7 +14,6 @@ const Explore = () => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [loadmore, setLoadmore] = useState(false);
-    console.log("posts in box",posts);
 
 
     // Fetch available categories on mount

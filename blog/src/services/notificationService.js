@@ -27,7 +27,6 @@ export const getNotification = async (userId) => {
             }
         );
         
-        console.log("notification fetched", response.data);
         return response;
     } catch (error) {
         console.error("Error fetching notification:", error.response?.data || error.message);
@@ -51,7 +50,6 @@ export const markReadNotification = async (userId) => {
             }
         );
 
-        console.log("notification marked", response.data);
     } catch (error) {
         console.error("Error fetching notification:", error.response?.data || error.message);
     }

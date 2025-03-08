@@ -29,7 +29,6 @@ export const  getCategories = async () => {
         },
       }
     );
-    console.log(response);
     return response.data; 
   } catch (error) {
     console.error('Error fetching card details:', error);

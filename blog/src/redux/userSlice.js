@@ -10,7 +10,6 @@ const userSlice = createSlice({
     reducers:{
         setUser(state,action){
             const {username,profilePicture,email,userId} = action.payload;
-            console.log('Dispatching setUser', action.payload);
             state.email=email;
             state.userId=userId;
             state.username=username;

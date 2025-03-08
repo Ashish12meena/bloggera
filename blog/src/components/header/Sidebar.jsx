@@ -1,26 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { MdMenuOpen } from "react-icons/md";
 import { IoHomeOutline, IoSearchOutline } from "react-icons/io5";
-import { FaProductHunt } from "react-icons/fa";
-import { TbReportSearch } from "react-icons/tb";
-import { IoLogoBuffer } from "react-icons/io";
 import { CiSettings } from "react-icons/ci";
 import { TbLogout } from "react-icons/tb";
-import { MdOutlineDashboard } from "react-icons/md";
 import logo from "../../assets/images/Bloggera.svg";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import profileEmptyLogo from "../../assets/images/No-Avtar.png";
 import { clearUser } from '../../redux/userSlice';
 import { IoAdd, IoLogOut } from "react-icons/io5";
-import { GoPersonFill } from "react-icons/go";
-import { FaSearch } from "react-icons/fa";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { TfiWrite } from "react-icons/tfi";
 import { GoPerson } from "react-icons/go";
 import SidebarSkleton from '../Skeleton/SidebarSkleton';
 import { setNotification } from '../../redux/notificationSlice';
-import { getNotification } from '../../services/notificationService';
+import { getNotification, markReadNotification } from '../../services/notificationService';
 
 
 
@@ -41,16 +35,12 @@ export default function Layout() {
         const fetchNotifications = async () => {
             try {
                 const response = await getNotification(userId) || []; // Fetch notifications
-                console.log(response, "In sidebar");
                 dispatch(setNotification({
                     notificationCount: response.data.length,
                     notificationData: response.data
                 }));
-                console.log(response.data, "In notification");
-
-
                 if (response.data.length > 0) {
-                    // await markReadNotification(userId); // Mark notifications as read
+                    await markReadNotification(userId); // Mark notifications as read
                 }
             } catch (error) {
                 console.error("Error fetching notifications:", error);
@@ -86,7 +76,6 @@ export default function Layout() {
 
     const handleScrollOnclick = () => {
         const scrollPosition = window.scrollY;
-        console.log("Scroll position saved:", scrollPosition);
     }
 
 

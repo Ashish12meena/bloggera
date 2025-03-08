@@ -112,7 +112,6 @@ const AddPost = ({ placeholder }) => {
       if (response.status === 200) {
         resetPost();
       }
-      console.log('Post created:', response);
     } catch (error) {
       console.error('Error while adding post:', error);
     }

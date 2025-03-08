@@ -14,10 +14,6 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 export const TokenService = async (dispatch) => {
     const authToken = getToken();
 
-
-    console.log(authToken, "authToken in tokenservice");
-
-
     if (!authToken) {
         return false;
     }
@@ -37,13 +33,7 @@ export const TokenService = async (dispatch) => {
             }
         );
 
-
-        console.log(response, " response of authtoken");
-
         if (response.status === 200) {
-
-
-            console.log("token service");
 
             dispatch(setUser({
                 email: response.data.email,
@@ -56,7 +46,6 @@ export const TokenService = async (dispatch) => {
         }
         return false;
     } catch (error) {
-        console.log(" token response");
         return false;
     }
 }
@@ -79,8 +68,6 @@ export const saveTokenToBackend = async (userId, fcmToken) => {
                 },
             }
         );
-
-        console.log("Token successfully saved to backend", response.data);
     } catch (error) {
         console.error("Error saving token:", error.response?.data || error.message);
     }

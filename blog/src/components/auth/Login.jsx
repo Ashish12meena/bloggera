@@ -56,7 +56,6 @@ export default function Login({ open, closeModal }) {
         if (response > 400) {
           setError(response.description || "Login failed. Please try again.");
         } else {
-          console.log("naviagte");
           closeModal();
           navigate("/home");
           // window.location.reload(); // Trigger a refresh after navigation

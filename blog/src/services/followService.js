@@ -14,7 +14,6 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const addFollower = async (loggedUserId, followedUserId) => {
     const authToken = getToken();
-    console.log(loggedUserId, followedUserId, "authToken in tokenservice");
     
 
     if (!authToken) {
@@ -33,8 +32,6 @@ export const addFollower = async (loggedUserId, followedUserId) => {
                 },
             }
         );
-
-        console.log("add Follower");
         
     } catch (error) {
         console.error("Error saving token:", error.response?.data || error.message);
@@ -43,9 +40,6 @@ export const addFollower = async (loggedUserId, followedUserId) => {
 
 export const removeFollower = async (loggedUserId, followedUserId) => {
     const authToken = getToken();
-    console.log(loggedUserId, followedUserId, "authToken in tokenservice");
-    
-
     if (!authToken) {
         return false;
     }
@@ -61,10 +55,7 @@ export const removeFollower = async (loggedUserId, followedUserId) => {
                     "Content-Type": "application/json", // Explicitly set Content-Type
                 },
             }
-        );
-
-        console.log("remove Follower");
-        
+        );        
 
         
     } catch (error) {
@@ -74,7 +65,6 @@ export const removeFollower = async (loggedUserId, followedUserId) => {
 
 export const getFollowStatus = async (Follower, userId) => {
     const authToken = getToken();
-    console.log(loggedUserId, followedUserId, "get Follow Status");
     
 
     if (!authToken) {

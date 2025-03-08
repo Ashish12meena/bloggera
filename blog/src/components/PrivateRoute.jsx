@@ -11,7 +11,6 @@ const PrivateRoute = ({ element }) => {
   useEffect(() => {
     const checkAuth = async () => {
       const isValid = await TokenService(dispatch);
-      console.log(isValid, " is valid or not");
         setIsAuthenticated(isValid);
       
     };
@@ -20,7 +19,7 @@ const PrivateRoute = ({ element }) => {
 
   useEffect(() => {
     if (isAuthenticated === false) {
-      console.log("In not auth");
+      
       navigate("/start");
     }
   }, [isAuthenticated, navigate]);

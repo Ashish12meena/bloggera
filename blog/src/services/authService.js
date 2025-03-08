@@ -6,7 +6,6 @@ const REST_API_BASE_URL = `${BASE}/auth/users`
 
 export const createUsers = async (user) => {
     return axios.post(REST_API_BASE_URL + '/register', user).then((response) => {
-        console.log(response);
         
         if (response.status >= 200 && response.status < 300) {
             localStorage.setItem("authToken", JSON.stringify(response.data.authToken));
@@ -18,11 +17,8 @@ export const createUsers = async (user) => {
 }
 
 export const loginUser = async (user,dispatch) => {
-    console.log(user);  
-    console.log("In catch user ");
     
     return axios.post(REST_API_BASE_URL + '/login', user).then((response) => {
-        console.log("In Login User");
         if (response.data.authToken) {
             localStorage.setItem("authToken", JSON.stringify(response.data.authToken))
             // console.log(response.data);
@@ -36,7 +32,6 @@ export const loginUser = async (user,dispatch) => {
               );
 
         }
-        console.log(response, "response in login");
         
         return response.status;
 

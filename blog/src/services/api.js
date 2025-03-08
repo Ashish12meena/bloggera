@@ -29,7 +29,7 @@ export const createData = async (data) => {
 // Read Operation (GET)
 export const getData = async () => {
   const token = getToken();
-  console.log(token);
+
   
   if (!token) {
     throw new Error('No token found');

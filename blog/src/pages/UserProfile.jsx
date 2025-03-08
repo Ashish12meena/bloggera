@@ -21,16 +21,13 @@ const Profile = () => {
   const [followStatus, setFollowStatus] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
 
-  // Scroll to the top when the component mounts
-  console.log(emailToFetch, "emailToFetch");
-  console.log(loggedInEmail, "loggedInEmail");
+ 
 
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  console.log(user.userId, "user.userId", userId, "userId");
 
   useEffect(() => {
     try {
@@ -61,11 +58,9 @@ const Profile = () => {
       if (followStatus) {
         // If already following, remove the follower
         await removeFollower(userId, user.userId);
-        console.log("Follower removed");
       } else {
         // If not following, add the follower
         await addFollower(userId, user.userId);
-        console.log("Follower added");
       }
 
       // Toggle the follow status after a successful API call

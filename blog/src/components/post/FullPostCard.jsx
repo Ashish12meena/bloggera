@@ -23,7 +23,6 @@ const FullPostCard = () => {
             try {
                 const data = await getFullPostDetail({ postId, userId }); // Fetch data from the API
                 setCardDetails(data); // Update state with the fetched data
-                console.log(data);
                 
                 setLoading(false); // Set loading to false
             } catch (error) {

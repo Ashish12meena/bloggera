@@ -9,8 +9,6 @@ const Notification = () => {
     const { userId } = useSelector((state) => state.user);
     const [notifications, setNotifications] = useState([]);
     const { notificationData, notificationCount } = useSelector((state) => state.notification);
-    console.log(notificationData, "In notification", notificationCount);
-    console.log(notifications, "In notification");
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -21,7 +19,6 @@ const Notification = () => {
                     notificationCount: 0,
                     notificationData: response.data
                 }));
-                console.log(response.data, "In notification");
 
 
                 if (response.data.length > 0) {

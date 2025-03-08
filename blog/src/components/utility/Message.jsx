@@ -1,5 +1,4 @@
 const Message = ({ notification }) => {
-  console.log("Notification: ", notification);
 
   return (
     <div className="flex items-start p-4 border border-gray-200 rounded-lg shadow-md bg-white">

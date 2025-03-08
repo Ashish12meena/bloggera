@@ -25,7 +25,6 @@ const Home = () => {
   
   useEffect(() => {
     const unsubscribe = onMessage(messaging, (payload) => {
-      console.log("Notification received while app is in foreground:", payload);
       toast(<Message notification={payload.notification} />);
       
     });
@@ -63,16 +62,13 @@ const Home = () => {
       if (savedScrollPosition) {
         requestAnimationFrame(() => {
           window.scrollTo(0, parseInt(savedScrollPosition, 10));
-          console.log("Restored Scroll Position: home", savedScrollPosition);
         });
       }
     }
   }, [loading, location.pathname]);
-
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
     sessionStorage.setItem(`scrollPosition-${location.pathname}`, scrollPosition.toString());
-    console.log("Scroll position saved: home", scrollPosition);
   };
 
 
@@ -83,8 +79,6 @@ const Home = () => {
       try {
         if (posts.length === 0) {
           const data = await getCardDetails({ userId, excludedIds: [] });
-          console.log(data);
-          
           dispatch(setPosts(data));
         }
       } catch (error) {

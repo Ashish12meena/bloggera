@@ -3,7 +3,6 @@ import { messaging } from "./firebaseConfig";
 import { saveTokenToBackend } from "./TokenService";
 
 onMessage(messaging, (payload) => {
-    console.log("Foreground Message Received:", payload);
   
     // Display notification manually
     const { title, body } = payload.notification;
@@ -21,11 +20,9 @@ export async function requestPermission(userId) {
       });
 
       if (fcmToken) {
-        console.log("FCM Token: dj", fcmToken);
         await saveTokenToBackend(userId, fcmToken);
         return fcmToken; // You can send this token to your backend server
       } else {
-        console.log("No registration token available.");
 
       }
     } else {

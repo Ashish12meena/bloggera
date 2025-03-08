@@ -13,8 +13,6 @@ const getToken = () => {
 
 export const getUserByEmail = async (email,userId) => {
     const authToken = getToken();
-
-    console.log(email);
     
     
 
@@ -31,8 +29,6 @@ export const getUserByEmail = async (email,userId) => {
                 },
             }
         );
-        
-        console.log("users",response);
         
 
         return response.data; // Return the data part of the response

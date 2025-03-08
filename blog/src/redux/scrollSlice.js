@@ -9,7 +9,6 @@ const scrollSlice = createSlice({
     reducers: {
       saveScrollPosition: (state, action) => {
         state.position = action.payload;
-        console.log(state.position," in redux");
         
       },
     },

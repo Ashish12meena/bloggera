@@ -65,8 +65,6 @@ export const  getFullPostDetail = async ({postId,userId}) => {
   }
 };
 export const  addPost = async (formData) => {
-
-  console.log('formdata', formData);
   
     const authToken = getToken();
     if (!authToken) {
@@ -85,7 +83,6 @@ export const  addPost = async (formData) => {
         },
       }
     );
-    console.log(response);
     
     return response; // Return the data part of the response
   } catch (error) {
@@ -94,8 +91,6 @@ export const  addPost = async (formData) => {
   }
 };
 export const  searchPost = async (formData) => {
-
-  console.log('formdata', formData);
   
     const authToken = getToken();
     if (!authToken) {
@@ -113,7 +108,6 @@ export const  searchPost = async (formData) => {
         },
       }
     );
-    console.log(response);
     
     return response; 
   } catch (error) {
