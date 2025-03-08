@@ -9,7 +9,7 @@ import { submitComment } from "../../services/CommentService";
 
 const FullPostCard = () => {
     const [cardDetails, setCardDetails] = useState({})
-    const [message, setMessage] = useState("");
+    const [commentText, setCommentText] = useState("");
     const [loading, setLoading] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
     const location = useLocation();
@@ -23,6 +23,8 @@ const FullPostCard = () => {
             try {
                 const data = await getFullPostDetail({ postId, userId }); // Fetch data from the API
                 setCardDetails(data); // Update state with the fetched data
+                console.log(data);
+                
                 setLoading(false); // Set loading to false
             } catch (error) {
                 console.error('Error fetching card details:', error);
@@ -40,8 +42,8 @@ const FullPostCard = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = { postId, userId, message };
-        if (!message.trim()) return;
+        const data = { postId, userId, commentText };
+        if (!commentText.trim()) return;
 
         try {
 
@@ -58,18 +60,18 @@ const FullPostCard = () => {
 
 
                 
-                setMessage(""); // Clear input field after successful submission
+                setCommentText(""); // Clear input field after successful submission
             }
         } catch (error) {
             console.error("Error submitting comment:", error);
         }
     }
     const handleChange = (e) => {
-        setMessage(e.target.value);
+        setCommentText(e.target.value);
     };
 
     const handleCancel = () => {
-        setMessage("")
+        setCommentText("")
         setIsTyping(false)
     }
     if (loading) return <p>loading..</p>;
@@ -83,6 +85,7 @@ const FullPostCard = () => {
                         <PostCard
                             username={cardDetails.username}
                             likeStatus={cardDetails.likeStatus}
+                            userEmail={cardDetails.userEmail}
                             postId={postId}
                             postTitle={cardDetails.postTitle} 
                             commentCount={cardDetails.commentCount} 
@@ -101,7 +104,7 @@ const FullPostCard = () => {
                                 <textarea
                                     id="comment"
                                     name="comment"
-                                    value={message}
+                                    value={commentText}
                                     onFocus={() => setIsTyping(true)}
                                     rows="4"
                                     onChange={handleChange}
@@ -124,9 +127,9 @@ const FullPostCard = () => {
                                     <div>
                                         <button
                                             type="submit"
-                                            disabled={!message.trim()} // Disable button when message is empty
+                                            disabled={!commentText.trim()} // Disable button when commentText is empty
                                             className={`py-2.5 px-4 text-xs font-medium rounded-full focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 
-                                            ${message.trim() ? "bg-blue-500 text-white cursor-pointer hover:bg-blue-600" : "bg-gray-100 text-gray-300 cursor-not-allowed"}`}
+                                            ${commentText.trim() ? "bg-blue-500 text-white cursor-pointer hover:bg-blue-600" : "bg-gray-100 text-gray-300 cursor-not-allowed"}`}
                                         >
                                             Post comment
                                         </button>

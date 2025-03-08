@@ -1,45 +1,90 @@
 import React, { useEffect, useState } from "react";
 import PostCard from "../components/post/PostCard";
+
 import { getCardDetails } from "../services/PostService";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts, appendPosts } from "../redux/postSlice";
-import { saveScrollPosition } from "../redux/scrollSlice";
 import HomePageSkeleton from "../components/Skeleton/HomePageSkeleton";
+import { useLocation } from "react-router-dom";
+import { onMessage } from "firebase/messaging";
+import { toast, ToastContainer } from "react-toastify";
+import { requestPermission } from "../services/firebaseToken";
+import Message from "../components/utility/Message";
+import { messaging } from "../services/firebaseConfig";
+
 
 const Home = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const posts = useSelector((state) => state.posts.data);
   const { userId } = useSelector((state) => state.user);
-  const scrollPosition = useSelector((state) => state.scroll.position);
+  // const scrollPosition = useSelector((state) => state.scroll.position);
 
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("foryou");
+  
+  useEffect(() => {
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log("Notification received while app is in foreground:", payload);
+      toast(<Message notification={payload.notification} />);
+      
+    });
 
-  // ✅ Restore Scroll Position on Mount
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(()=>{
+    if (userId) {
+      requestPermission(userId);
+    }
+  },[])
+
+  // Restore scroll position from localStorage
+  useEffect(() => {
+    const resetScrollOnReload = () => {
+      sessionStorage.removeItem(`scrollPosition-${location.pathname}`);
+      window.scrollTo(0, 0);
+    };
+
+    // Add event listener for beforeunload (triggered when the page is about to reload/close)
+    window.addEventListener("beforeunload", resetScrollOnReload);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("beforeunload", resetScrollOnReload);
+    };
+  }, [location.pathname]);
+
   useEffect(() => {
     if (!loading) {
-      requestAnimationFrame(() => {
-        window.scrollTo(0, scrollPosition);
-        console.log("Restored Scroll Position:", scrollPosition);
-      });
+      const savedScrollPosition = sessionStorage.getItem(`scrollPosition-${location.pathname}`);
+      if (savedScrollPosition) {
+        requestAnimationFrame(() => {
+          window.scrollTo(0, parseInt(savedScrollPosition, 10));
+          console.log("Restored Scroll Position: home", savedScrollPosition);
+        });
+      }
     }
-  }, [loading]);
+  }, [loading, location.pathname]);
 
-    const handleScroll = () => {
-      requestAnimationFrame(() => {
-        console.log("Scroll position:", window.scrollY);
-        dispatch(saveScrollPosition(window.scrollY));
-      });
-    };
-  
- 
+  const handleScroll = () => {
+    const scrollPosition = window.scrollY;
+    sessionStorage.setItem(`scrollPosition-${location.pathname}`, scrollPosition.toString());
+    console.log("Scroll position saved: home", scrollPosition);
+  };
 
-  
+
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (posts.length === 0) {
           const data = await getCardDetails({ userId, excludedIds: [] });
+          console.log(data);
+          
           dispatch(setPosts(data));
         }
       } catch (error) {
@@ -52,7 +97,7 @@ const Home = () => {
     fetchData();
   }, [userId, dispatch]);
 
-  // ✅ Load More Posts
+
   const loadMorePosts = async () => {
     try {
       const postIds = posts.map((post) => post.postId);
@@ -68,9 +113,11 @@ const Home = () => {
 
   if (loading) return <HomePageSkeleton />;
 
+
   return (
     <>
       <div >
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false}   />
         <ul className="flex justify-center space-x-6 text-xs sm:text-xl font-semibold text-gray-600 py-3">
           <button
             className={`cursor-pointer ${activeTab === "foryou" ? "border-b-2 border-gray-700 text-gray-700" : ""}`}
@@ -98,6 +145,7 @@ const Home = () => {
           <PostCard
             key={index}
             postId={post.postId}
+            userEmail={post.userEmail}
             username={post.username}
             profilePicture={post.profilePicture}
             postTitle={post.postTitle}

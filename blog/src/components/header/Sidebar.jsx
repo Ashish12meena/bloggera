@@ -12,35 +12,82 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import profileEmptyLogo from "../../assets/images/No-Avtar.png";
 import { clearUser } from '../../redux/userSlice';
-import { IoAdd,IoLogOut } from "react-icons/io5";
+import { IoAdd, IoLogOut } from "react-icons/io5";
 import { GoPersonFill } from "react-icons/go";
 import { FaSearch } from "react-icons/fa";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { TfiWrite } from "react-icons/tfi";
 import { GoPerson } from "react-icons/go";
 import SidebarSkleton from '../Skeleton/SidebarSkleton';
+import { setNotification } from '../../redux/notificationSlice';
+import { getNotification } from '../../services/notificationService';
 
 
 
-
-const menuItems = [
-    { icons: <IoHomeOutline size={30} />, label: 'Home', path: '/' },
-    { icons: <IoSearchOutline size={30} />, label: 'Explore', path: '/explore' },
-    { icons: <IoIosNotificationsOutline size={30}  className="stroke-3 drop-shadow-md"/>, label: 'Notification', path: '/notification' },
-    // { icons: <MdOutlineDashboard size={30} />, label: 'Dashboard', path: '/dashboard' },
-    { icons: <TfiWrite size={30} />, label: 'Write', path: '/write/post' },
-    { icons: <CiSettings size={30} />, label: 'Setting', path: '/settings' },
-    { icons: <GoPerson size={30} />, label: 'Profile', path: '/profile' }
-];
 
 export default function Layout() {
+    const dispatch = useDispatch();
+    const { userId } = useSelector((state) => state.user);
+    const { notificationCount } = useSelector((state) => state.notification);
     const [open, setOpen] = useState(true);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const { email, profilePicture, username } = useSelector((state) => state.user);
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [showProfileMenu, setShowProfileMenu] = useState(false); // Manage pop-up visibility
-    const [activeIcon , setActiveIcon] = useState(null)
+    const [activeIcon, setActiveIcon] = useState(null)
+
+    useEffect(() => {
+        if (!userId) return;
+        const fetchNotifications = async () => {
+            try {
+                const response = await getNotification(userId) || []; // Fetch notifications
+                console.log(response, "In sidebar");
+                dispatch(setNotification({
+                    notificationCount: response.data.length,
+                    notificationData: response.data
+                }));
+                console.log(response.data, "In notification");
+
+
+                if (response.data.length > 0) {
+                    // await markReadNotification(userId); // Mark notifications as read
+                }
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+            }
+        };
+
+        fetchNotifications();
+    }, [userId]);
+
+    const menuItems = [
+        { icons: <IoHomeOutline size={30} />, label: 'Home', path: '/' },
+        { icons: <IoSearchOutline size={30} />, label: 'Explore', path: '/explore' },
+        {
+            icons: (
+                <div className="relative">
+                    <IoIosNotificationsOutline size={30} className="stroke-3 drop-shadow-md" />
+                    {notificationCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                            {notificationCount}
+                        </span>
+                    )}
+                </div>
+            ),
+            label: 'Notification',
+            path: '/notification'
+        },
+        // { icons: <MdOutlineDashboard size={30} />, label: 'Dashboard', path: '/dashboard' },
+        { icons: <TfiWrite size={30} />, label: 'Write', path: '/write/post' },
+        { icons: <CiSettings size={30} />, label: 'Setting', path: '/settings' },
+        { icons: <GoPerson size={30} />, label: 'Profile', path: '/profile' }
+    ];
+
+
+    const handleScrollOnclick = () => {
+        const scrollPosition = window.scrollY;
+        console.log("Scroll position saved:", scrollPosition);
+    }
 
 
     const handleLogOut = () => {
@@ -61,9 +108,11 @@ export default function Layout() {
         } else {
             setIsAuthenticated(false);
         }
-        
+
     }, [email]);
     const handleMenuClick = (path) => {
+
+        sessionStorage.setItem(`scrollPosition-${window.location.pathname}`, window.scrollY);
         setActiveIcon(path)
         navigate(path);
     };
@@ -73,11 +122,11 @@ export default function Layout() {
     }
     return (
         <>
-            
+
             {isAuthenticated && (
                 <div className={`flex h-screen p-4 ${open ? 'md:ml-52 ml-10' : 'md:ml-10 ml-10'}`}>
                     {/* Sidebar */}
-                    <nav className={`shadow-md h-screen p-2 flex flex-col bg-gray-100 text-black fixed top-0 left-0 ${open ? 'w-60' : 'w-16'} duration-500`}>
+                    <nav className={`shadow-md h-screen z-50 p-2 flex flex-col bg-gray-100 text-black fixed top-0 left-0 ${open ? 'w-60' : 'w-16'} duration-500`}>
 
                         <div className='px-3 py-2 h-20 flex justify-between items-center'>
                             <img src={logo} alt="Logo" className={`${open ? 'w-30' : 'w-0'} rounded-md`} />
@@ -87,10 +136,10 @@ export default function Layout() {
                         {/* Body */}
                         <ul className='flex-1'>
                             {menuItems.map((item, index) => (
-                                <li key={index} 
-                                className={`px-3 py-2 my-2 rounded-md duration-300 cursor-pointer flex gap-2 items-center relative group 
-                                    ${activeIcon === item.path ? 'shadow-md bg-gray-300' : 'hover:bg-gray-500'}`} 
-                                onClick={()=>handleMenuClick(item.path)}
+                                <li key={index}
+                                    className={`px-3 py-2 my-2 rounded-md duration-300 cursor-pointer flex gap-2 items-center relative group 
+                                    ${activeIcon === item.path ? 'shadow-md bg-gray-300' : 'hover:bg-gray-500'}`}
+                                    onClick={() => handleMenuClick(item.path)}
                                 >
                                     <div>{item.icons}</div>
                                     <p className={`${!open && 'w-0 translate-x-24'} duration-500 overflow-hidden`}>{item.label}</p>
@@ -129,9 +178,9 @@ export default function Layout() {
                                             className="flex items-center gap-2 cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-all "
                                             onClick={handleLogOut}
                                         >
-                                             {/* <IoLogOut size={18} className="inline mr-2" />  */}
-                                             <TbLogout size={18}  ></TbLogout>
-                                             <span>Log out</span>
+                                            {/* <IoLogOut size={18} className="inline mr-2" />  */}
+                                            <TbLogout size={18}  ></TbLogout>
+                                            <span>Log out</span>
                                         </button>
                                     </div>
                                 </div>

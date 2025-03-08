@@ -4,34 +4,81 @@ import { getUserByEmail } from "../services/userService";
 import PostCard from "../components/post/PostCard";
 import profileEmptyLogo from "../assets/images/No-Avtar.png";
 import ProfileSkeleton from "../components/Skeleton/ProfileSkeleton";
+import { useParams } from "react-router-dom";
+import { GiCheckMark } from "react-icons/gi";
+import { addFollower, getFollowStatus, removeFollower } from "../services/followService";
+
 
 const Profile = () => {
-  const { email } = useSelector((state) => state.user);
-  const [user, setUser] = useState(null);
-  const [posts, setPosts] = useState(null);
-  const [activeTab,setActiveTab] = useState("posts");
+  const { userEmail } = useParams();
+  const { email: loggedInEmail, userId } = useSelector((state) => state.user);
+  const emailToFetch = userEmail || loggedInEmail;
+  const [user, setUser] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
+  const [posts, setPosts] = useState([]);
+  const [followStatus, setFollowStatus] = useState(false);
+  const [activeTab, setActiveTab] = useState("posts");
 
   // Scroll to the top when the component mounts
+  console.log(emailToFetch, "emailToFetch");
+  console.log(loggedInEmail, "loggedInEmail");
+
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    if (email) {
-      getUserByEmail(email)
-        .then((response) => {
-          setUser(response.user);
-          setPosts(response.posts);
-        })
-        .catch((error) => console.error("Error fetching user:", error));
-    }
-  }, [email]);
+  console.log(user.userId, "user.userId", userId, "userId");
 
-  if (!user) {
+  useEffect(() => {
+    try {
+      if (emailToFetch) {
+        getUserByEmail(emailToFetch, userId)
+          .then((response) => {
+            setUser(response.user || []);
+            setPosts(response.posts || []);
+            setFollowStatus(response.user.followStatus || false);
+          }).finally(() => setLoading(false));
+
+      }
+
+    } catch (error) {
+       console.log("Error fetching user:", error);
+    }
+
+  }, [emailToFetch]);
+
+
+  const handleFollow = async () => {
+    if (!user.userId || !userId) {
+      console.error("User ID is missing");
+      return;
+    }
+    try {
+      setFollowStatus(!followStatus);
+      if (followStatus) {
+        // If already following, remove the follower
+        await removeFollower(userId, user.userId);
+        console.log("Follower removed");
+      } else {
+        // If not following, add the follower
+        await addFollower(userId, user.userId);
+        console.log("Follower added");
+      }
+
+      // Toggle the follow status after a successful API call
+    } catch (error) {
+      console.error("Error updating follow status:", error);
+    }
+  };
+
+  if (!user||loading) {
     return <ProfileSkeleton />;
   }
-  
-  
+
+
 
   return (
     <main className="bg-opacity-25 py-6 px-4 sm:px-6 lg:px-8">
@@ -53,16 +100,25 @@ const Profile = () => {
               <span className="text-blue-500 text-xl relative">
                 <i className="fas fa-check-circle"></i>
               </span>
-              <button className="bg-blue-500 px-4 py-2 text-white font-semibold text-sm rounded mt-2 sm:mt-0">
-                Follow
-              </button>
+              {userEmail && userEmail !== loggedInEmail && (
+                <button
+                  className="cursor-pointer"
+                  onClick={handleFollow}
+                >
+                  {followStatus ? (
+                    <span className="flex flex-row px-4 py-2 font-semibold text-sm rounded mt-2 sm:mt-0 text-black bg-gray-500">Following <GiCheckMark /></span>
+                  ) : (
+                    <span className="bg-blue-500 px-4 py-2 font-semibold text-sm rounded mt-2 sm:mt-0">Follow</span>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Stats Section */}
             <ul className="flex justify-center sm:justify-start space-x-6 text-sm text-gray-600">
-              <li><span className="font-semibold">136</span> posts</li>
-              <li><span className="font-semibold">40.5k</span> followers</li>
-              <li><span className="font-semibold">302</span> following</li>
+              <li><span className="font-semibold">{user.postCount}</span> posts</li>
+              <li><span className="font-semibold">{user.followerCount}</span> followers</li>
+              <li><span className="font-semibold">{user.followingCount}</span> following</li>
             </ul>
 
             {/* Bio Section */}
@@ -74,16 +130,16 @@ const Profile = () => {
         <div className="border-t mt-4">
           <ul className="flex justify-center space-x-6 text-xs sm:text-sm font-semibold text-gray-600 py-3">
             <li>
-              <a  className={`pb-1 cursor-pointer ${activeTab === "posts" ? "border-b-2 border-gray-700 text-gray-700" : ""}`}
-              onClick={() => setActiveTab("posts")}>Posts</a>
+              <a className={`pb-1 cursor-pointer ${activeTab === "posts" ? "border-b-2 border-gray-700 text-gray-700" : ""}`}
+                onClick={() => setActiveTab("posts")}>Posts</a>
             </li>
             <li>
               <a className={`pb-1 cursor-pointer ${activeTab === "saved" ? "border-b-2 border-gray-700 text-gray-700" : ""}`}
-              onClick={() => setActiveTab("saved")}>Saved</a>
+                onClick={() => setActiveTab("saved")}>Saved</a>
             </li>
             <li>
               <a className={`pb-1 cursor-pointer ${activeTab === "tagged" ? "border-b-2 border-gray-700 text-gray-700" : ""}`}
-              onClick={() => setActiveTab("tagged")}>Tagged</a>
+                onClick={() => setActiveTab("tagged")}>Tagged</a>
             </li>
           </ul>
         </div>

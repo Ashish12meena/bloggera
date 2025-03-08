@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import IconStrip from '../IconStrip';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import truncate from "html-truncate";
 
-const PostCard = ({ username, profilePicture, postTitle, postContent, postImage, likeStatus, likeCount, commentCount, isFullPost, postId }) => {
+const PostCard = ({ username, userEmail, profilePicture, postTitle, postContent, postImage, likeStatus, likeCount, commentCount, isFullPost, postId }) => {
   const navigate = useNavigate();
-  const { userId } = useSelector((state) => state.user);
-  const [loading, setLoading] = useState(true);
-  console.log("username",username);
-  console.log("postTitle",postTitle);
-  
-  
+
 
   const handleReadMore = () => {
     navigate(`/post?postId=${encodeURIComponent(postId)}`, { state: { postId } });
@@ -22,7 +16,7 @@ const PostCard = ({ username, profilePicture, postTitle, postContent, postImage,
       <div className={`flex flex-col flex-1 ${!isFullPost ? "md:flex-row" : ""} gap-4`}>
 
         {/* Content Section */}
-        <div className="flex flex-col flex-1" onClick={handleReadMore}>
+        <div className="flex flex-col flex-1" >
           {/* User Info */}
           {(profilePicture || username) && (
             <div className="flex items-center gap-2 mb-2">
@@ -31,11 +25,15 @@ const PostCard = ({ username, profilePicture, postTitle, postContent, postImage,
                 alt={username || "Unknown"}
                 className="w-10 h-10 rounded-full object-cover"
               />
-              <span className="font-semibold text-gray-800">{username || "Unknown"}</span>
+              <span className="font-semibold text-gray-800">
+                <Link to={`/profile/${userEmail}`} className=" hover:underline">
+                  {username || "Unknown"}
+                </Link>
+              </span>
             </div>
           )}
 
-          <div className="flex flex-col justify-center md:text-start flex-grow">
+          <div className="flex flex-col justify-center md:text-start flex-grow" onClick={handleReadMore}>
             <h1 className={`font-bold ${isFullPost ? "md:text-4xl sm:text-3xl text-xl" : "text-lg"} text-gray-900`}>
               {postTitle || "Untitled"}
             </h1>
@@ -50,14 +48,14 @@ const PostCard = ({ username, profilePicture, postTitle, postContent, postImage,
               </div>
             )}
 
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600" onClick={handleReadMore}>
               {isFullPost ? (
-                <span className="break-words whitespace-pre-wrap" 
+                <span className="break-words whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{ __html: postContent || "No content available." }}>
                 </span>
               ) : (
                 <>
-                  <span className="break-words whitespace-pre-wrap" 
+                  <span className="break-words whitespace-pre-wrap"
                     dangerouslySetInnerHTML={{ __html: truncate(postContent || "", 100) }}>
                   </span>
                   {postContent && postContent.length > 100 && (
@@ -81,7 +79,7 @@ const PostCard = ({ username, profilePicture, postTitle, postContent, postImage,
       </div>
 
       {/* IconStrip should always be at the bottom */}
-      <div className="mt-auto pt-4">
+      <div className="mt-auto pt-4" onClick={handleReadMore}>
         <IconStrip likeStatus={likeStatus} likeCount={likeCount} commentCount={commentCount} postId={postId} />
       </div>
     </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { getCategories } from "../services/CategoryService";
 import { useSelector } from "react-redux";
 import HomePageSkeleton from "../components/Skeleton/HomePageSkeleton";
@@ -16,7 +15,7 @@ const Explore = () => {
     const [loading, setLoading] = useState(false);
     const [loadmore, setLoadmore] = useState(false);
     console.log("posts in box",posts);
-    
+
 
     // Fetch available categories on mount
     useEffect(() => {
@@ -120,7 +119,7 @@ const Explore = () => {
     if (loading) return <HomePageSkeleton />;
 
     return (
-        <div className="max-w-3xl mx-auto mt-10 p-5">
+        <div className="max-w-3xl mx-auto  p-5">
             {/* Search Input & Button (Side by Side) */}
             <div className="flex items-center gap-2 bg-white shadow-md rounded-lg">
                 <div className="relative flex-1">
@@ -197,7 +196,7 @@ const Explore = () => {
                     />
                 ))}
             </div>
-            {loadmore && (
+            {(loadmore && posts.length>5) && (
                 <button
                     onClick={loadMorePosts}
                     className="bg-blue-500 text-white p-2 rounded"

@@ -8,8 +8,11 @@ const getToken = () => {
     return user ? user : null;
 };
 
-export const getUserByEmail = async (email) => {
+export const getUserByEmail = async (email,userId) => {
     const authToken = getToken();
+
+    console.log(email);
+    
     
 
     if (!authToken) {
@@ -18,7 +21,7 @@ export const getUserByEmail = async (email) => {
     try {
         const response = await axios.post(
             `${REST_API_BASE_URL}/userdetails`, 
-            { email }, // Send email as part of the request body in an object
+            { email ,userId}, // Send email as part of the request body in an object
             {
                 headers: {
                     Authorization: `Bearer ${authToken}`, // Add the Bearer token in the Authorization header
@@ -26,7 +29,7 @@ export const getUserByEmail = async (email) => {
             }
         );
         
-        console.log(response);
+        console.log("users",response);
         
 
         return response.data; // Return the data part of the response
@@ -35,3 +38,5 @@ export const getUserByEmail = async (email) => {
         throw error; // Re-throw the error for further handling
     }
 };
+
+

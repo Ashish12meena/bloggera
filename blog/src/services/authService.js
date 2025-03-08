@@ -62,3 +62,4 @@ export const getCurrentUser = () => {
     return JSON.parse(user); // Parse the user if found
 };
 
+

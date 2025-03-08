@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../services/authService";
+import { requestPermission } from '../../services/firebaseToken';
 
 export default function Login({ open, closeModal }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -51,11 +52,11 @@ export default function Login({ open, closeModal }) {
     setLoading(true);
     try {
       const response = await loginUser(formData, dispatch).then((response) => {
+        
         if (response > 400) {
           setError(response.description || "Login failed. Please try again.");
         } else {
           console.log("naviagte");
-
           closeModal();
           navigate("/home");
           // window.location.reload(); // Trigger a refresh after navigation
