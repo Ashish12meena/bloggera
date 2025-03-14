@@ -6,11 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPosts, appendPosts } from "../redux/postSlice";
 import HomePageSkeleton from "../components/Skeleton/HomePageSkeleton";
 import { useLocation } from "react-router-dom";
-import { onMessage } from "firebase/messaging";
-import { toast, ToastContainer } from "react-toastify";
-import { requestPermission } from "../services/firebaseToken";
-import Message from "../components/utility/Message";
-import { messaging } from "../services/firebaseConfig";
+// import { onMessage } from "firebase/messaging";
+// import { toast, ToastContainer } from "react-toastify";
+// import { requestPermission } from "../services/firebaseToken";
+// import Message from "../components/utility/Message";
+// import { messaging } from "../services/firebaseConfig";
 
 
 const Home = () => {
@@ -23,22 +23,22 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("foryou");
   
-  useEffect(() => {
-    const unsubscribe = onMessage(messaging, (payload) => {
-      toast(<Message notification={payload.notification} />);
+  // useEffect(() => {
+  //   const unsubscribe = onMessage(messaging, (payload) => {
+  //     toast(<Message notification={payload.notification} />);
       
-    });
+  //   });
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  //   return () => {
+  //     unsubscribe();
+  //   };
+  // }, []);
 
-  useEffect(()=>{
-    if (userId) {
-      requestPermission(userId);
-    }
-  },[])
+  // useEffect(()=>{
+  //   if (userId) {
+  //     requestPermission(userId);
+  //   }
+  // },[])
 
   // Restore scroll position from localStorage
   useEffect(() => {

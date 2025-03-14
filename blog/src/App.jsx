@@ -12,7 +12,7 @@ import AddPost from './components/post/AddPost';
 import SettingHome from './components/settings/SettingHome';
 import Explore from './pages/Explore';
 import { useEffect } from 'react';
-import { requestPermission } from './services/firebaseToken';
+// import { requestPermission } from './services/firebaseToken';
 import Notification from './pages/Notification';
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
 
           <Sidebar />
 
-          {/* Main Content */}
+          
           <div className="flex-1 ">
             {/* <Header />  This goes below Sidebar */}
             <Routes>

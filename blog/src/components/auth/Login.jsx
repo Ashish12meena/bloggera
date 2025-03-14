@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../services/authService";
-import { requestPermission } from '../../services/firebaseToken';
+// import { requestPermission } from '../../services/firebaseToken';
 
 export default function Login({ open, closeModal }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
